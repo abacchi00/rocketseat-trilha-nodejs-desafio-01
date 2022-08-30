@@ -10,12 +10,24 @@ app.use(express.json());
 
 const users = [];
 
+const findUser = (username) => users.find(user => user.username === username);
+
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  const { username } = request.headers;
+
+  const user = findUser(username);
+
+  if (!user) return response.status(400).json({ error: 'User not found for request header\'s username' });
+
+  request.user = user;
+
+  return next();
 }
 
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
+
+  if (!!findUser(username)) return response.status(400).json({ error: 'Propriedade "username" já utilizada para algum usuário existente!' })
 
   const newUser = { name, username, id: uuidv4(), todos: [] };
 
@@ -25,7 +37,9 @@ app.post('/users', (request, response) => {
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+
+  return response.json(user.todos);
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
