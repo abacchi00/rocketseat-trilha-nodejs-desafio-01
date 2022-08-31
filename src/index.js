@@ -42,7 +42,7 @@ function checksExistsUserTodo(request, response, next) {
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
 
-  if (!!findUser(username)) return response.status(400).json({ error: 'Propriedade "username" já utilizada para algum usuário existente!' })
+  if (!!findUser(username)) return response.status(400).json({ error: 'Propriedade \'username\' já utilizada para algum usuário existente!' })
 
   const newUser = { name, username, id: uuidv4(), todos: [] };
 
